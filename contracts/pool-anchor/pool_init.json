@@ -1,0 +1,13 @@
+{
+  "beneficiary": "terra1n3g37dsdlv7ryqftlkef8mhgqj4ny7p8v78lg7",
+  "dp_code_id": 1572,
+  "fee_amount": "0.05",
+  "fee_collector": "terra1yt8xwehw3mngc7h2z09utf32cgpdpe09lke902",
+  "fee_max": "0",
+  "fee_reset_every_num_blocks": 0,
+  "money_market": "terra15dwd5mj8v59wpj0wvt233mf5efdff808c5tkal",
+  "pool_name": "TEST",
+  "pool_title": "GoFund US(T) Test Fund",
+  "pool_description": "This is a test fund. Please do not put real money into it",
+  "owner_can_change_config": false
+}

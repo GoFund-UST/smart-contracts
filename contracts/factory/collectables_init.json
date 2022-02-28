@@ -1,0 +1,15 @@
+{
+  "name": "GoFund US(T)",
+  "symbol": "GoFund-UST",
+  "admin": "##SENDER##",
+  "minter": "##SENDER##",
+  "public_key": "A8O7tqWAvsKW9XA7p2W8YZdIZmmadf9qoQmRiZq8xpvl",
+  "mint_amount": 2000000,
+  "max_issuance": 0,
+  "max_collections": 0,
+  "transferable": false,
+  "change_amount": 1000000,
+  "change_multiplier": 0,
+  "default_royalty": "0.01",
+  "minter_can_switch_collections": true
+}

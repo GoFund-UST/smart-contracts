@@ -1,0 +1,13 @@
+{
+  "configure": {
+    "fee_collector": null,
+    "fee_amount": "0.02",
+    "fee_max": null,
+    "fee_reset_every_num_blocks": null,
+    "money_market": null,
+    "dp_code_id": null,
+    "anchor_pool_code_id":  47989,
+    "nft_contract": null,
+    "homepage": null
+  }
+}

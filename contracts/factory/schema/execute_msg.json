@@ -1,0 +1,249 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExecuteMsg",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "configure"
+      ],
+      "properties": {
+        "configure": {
+          "type": "object",
+          "properties": {
+            "anchor_pool_code_id": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "dp_code_id": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "fee_amount": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "fee_collector": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "fee_max": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Uint256"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "fee_reset_every_num_blocks": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "homepage": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "money_market": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "nft_contract": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "create_anchor_fund"
+      ],
+      "properties": {
+        "create_anchor_fund": {
+          "type": "object",
+          "required": [
+            "beneficiary",
+            "pool_description",
+            "pool_name",
+            "pool_title"
+          ],
+          "properties": {
+            "beneficiary": {
+              "type": "string"
+            },
+            "pool_description": {
+              "type": "string"
+            },
+            "pool_name": {
+              "type": "string"
+            },
+            "pool_title": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "add_anchor_fund"
+      ],
+      "properties": {
+        "add_anchor_fund": {
+          "type": "object",
+          "required": [
+            "contract"
+          ],
+          "properties": {
+            "contract": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "description": "owner only. migrate fund to current code-id configured",
+      "type": "object",
+      "required": [
+        "migrate_anchor_fund"
+      ],
+      "properties": {
+        "migrate_anchor_fund": {
+          "type": "object",
+          "required": [
+            "contract"
+          ],
+          "properties": {
+            "contract": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "description": "remove anchor fund from listings. It doesn't close the fund. it just removes it from listings. visible = false to hide beneficiary can 'hide' fund from listing.",
+      "type": "object",
+      "required": [
+        "hide_anchor_fund"
+      ],
+      "properties": {
+        "hide_anchor_fund": {
+          "type": "object",
+          "required": [
+            "contract",
+            "visible"
+          ],
+          "properties": {
+            "contract": {
+              "type": "string"
+            },
+            "visible": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "description": "removes NFTs from the fund.",
+      "type": "object",
+      "required": [
+        "remove_nft_from_fund"
+      ],
+      "properties": {
+        "remove_nft_from_fund": {
+          "type": "object",
+          "required": [
+            "contract"
+          ],
+          "properties": {
+            "contract": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "create_collections_for_fund"
+      ],
+      "properties": {
+        "create_collections_for_fund": {
+          "type": "object",
+          "required": [
+            "active_meta",
+            "contract",
+            "redeemed_meta"
+          ],
+          "properties": {
+            "active_meta": {
+              "type": "string"
+            },
+            "contract": {
+              "type": "string"
+            },
+            "redeemed_meta": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "description": "switches NFT administrator to the admin of this contract",
+      "type": "object",
+      "required": [
+        "revert_nft_admin"
+      ],
+      "properties": {
+        "revert_nft_admin": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    }
+  ],
+  "definitions": {
+    "Uint256": {
+      "type": "string"
+    }
+  }
+}

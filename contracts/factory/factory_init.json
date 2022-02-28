@@ -1,0 +1,11 @@
+{
+  "dp_code_id": 1572,
+  "fee_amount": "0.05",
+  "fee_collector": "terra1yt8xwehw3mngc7h2z09utf32cgpdpe09lke902",
+  "fee_max": "0",
+  "fee_reset_every_num_blocks": 0,
+  "money_market": "terra15dwd5mj8v59wpj0wvt233mf5efdff808c5tkal",
+  "anchor_pool_code_id":  47989,
+  "nft_code_id": 47850,
+  "homepage": "https://gofundust.money"
+}

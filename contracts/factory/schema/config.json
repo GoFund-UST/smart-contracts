@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Config",
+  "type": "object",
+  "required": [
+    "anchor_pool_code_id",
+    "dp_code_id",
+    "fee_amount",
+    "fee_collector",
+    "fee_max",
+    "fee_reset_every_num_blocks",
+    "money_market",
+    "owner",
+    "this"
+  ],
+  "properties": {
+    "anchor_pool_code_id": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "dp_code_id": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "fee_amount": {
+      "$ref": "#/definitions/Decimal256"
+    },
+    "fee_collector": {
+      "$ref": "#/definitions/CanonicalAddr"
+    },
+    "fee_max": {
+      "$ref": "#/definitions/Uint256"
+    },
+    "fee_reset_every_num_blocks": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "homepage": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "money_market": {
+      "$ref": "#/definitions/CanonicalAddr"
+    },
+    "nft_code_id": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "nft_contract": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CanonicalAddr"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nft_instantiate": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "owner": {
+      "$ref": "#/definitions/CanonicalAddr"
+    },
+    "this": {
+      "$ref": "#/definitions/CanonicalAddr"
+    }
+  },
+  "definitions": {
+    "Binary": {
+      "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>",
+      "type": "string"
+    },
+    "CanonicalAddr": {
+      "$ref": "#/definitions/Binary"
+    },
+    "Decimal256": {
+      "description": "A fixed-point decimal value with 18 fractional digits, i.e. Decimal256(1_000_000_000_000_000_000) == 1.0 The greatest possible value that can be represented is 115792089237316195423570985008687907853269984665640564039457.584007913129639935 (which is (2^128 - 1) / 10^18)",
+      "type": "string"
+    },
+    "Uint256": {
+      "type": "string"
+    }
+  }
+}

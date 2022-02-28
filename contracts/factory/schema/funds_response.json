@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FundsResponse",
+  "type": "object",
+  "required": [
+    "funds"
+  ],
+  "properties": {
+    "funds": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AnchorPool"
+      }
+    }
+  },
+  "definitions": {
+    "AnchorPool": {
+      "type": "object",
+      "required": [
+        "beneficiary",
+        "contract",
+        "open",
+        "owner",
+        "pool_name"
+      ],
+      "properties": {
+        "active_collection": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "beneficiary": {
+          "type": "string"
+        },
+        "contract": {
+          "type": "string"
+        },
+        "open": {
+          "type": "boolean"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "pool_name": {
+          "type": "string"
+        },
+        "redeemed_collection": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    }
+  }
+}

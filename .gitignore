@@ -32,3 +32,4 @@ local.config.ts
 /*.json
 /contracts/*/.env
 notes.txt
+notes

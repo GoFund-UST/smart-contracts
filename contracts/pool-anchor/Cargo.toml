@@ -1,0 +1,70 @@
+[package]
+name = "gofund-ust-anchor"
+version = "0.1.5"
+authors = ["PFC", "carter <carter@pylon.money>"]
+edition = "2018"
+
+description = "Pool contract for GoFund US(T). forked from pylon-core"
+exclude = [
+  # Those files are rust-optimizer artifacts. You might want to commit them for convenience but they should not be part of the source code publication.
+  "contract.wasm",
+  "hash.txt",
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+#[profile.release]
+#opt-level = 3
+#debug = false
+#rpath = false
+#lto = true
+#debug-assertions = false
+#codegen-units = 1
+#panic = 'abort'
+#incremental = false
+#overflow-checks = true
+
+#[profile.dev]
+#overflow-checks = true
+
+[features]
+# for more explicit tests, cargo test --features=backtraces
+backtraces = ["cosmwasm-std/backtraces"]
+
+[dependencies]
+cw2 = "0.9.1"
+cw20 = "0.8.1"
+cw721 = "0.9.2"
+gofund-ust-core = { version = "0.4", path = "../../packages/gofund_ust_core" }
+
+terraswap = "2.4.0"
+terra-cosmwasm = "2.2.0"
+thiserror = "1.0"
+cosmwasm-bignumber = "2.2.0"
+cosmwasm-std = { version = "0.16.0" }
+cosmwasm-storage = { version = "0.16.0" }
+schemars = "0.8.1"
+serde = { version = "1.0.103", default-features = false, features = ["derive"] }
+
+snafu = { version = "0.6.3" }
+protobuf = { version = "2", features = ["with-bytes"] }
+#uint = "=0.9.1"
+
+[dev-dependencies]
+cosmwasm-schema = { version = "0.16.0" }
+
+[package.metadata.scripts]
+optimize = """docker run --rm -v "$(pwd)":/code \
+          --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
+            --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+              cosmwasm/rust-optimizer:0.12.5"""
+optimize-w32 = """docker run --rm -v c:\\users\\ihols\\pfc\\fund-me\\GoFund-UST-contracts:/code  \
+            --mount type=volume,source=gofund_ust_anchor_cache,target=/code/target \
+            --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+            cosmwasm/rust-optimizer:0.12.5"""
+store = """terra-rust code store test ..\\..\\artifacts\\gofund_ust_anchor.wasm"""
+instantiate = """terra-rust code instantiate test ..\\..\\artifacts\\gofund_ust_anchor.wasm .\\pool_init.json --admin same"""
+migrate = """terra-rust code migrate test ..\\..\\artifacts\\gofund_ust_anchor.wasm"""

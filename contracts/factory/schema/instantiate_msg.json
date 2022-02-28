@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InstantiateMsg",
+  "type": "object",
+  "required": [
+    "anchor_pool_code_id",
+    "dp_code_id",
+    "fee_amount",
+    "fee_collector",
+    "fee_max",
+    "fee_reset_every_num_blocks",
+    "money_market"
+  ],
+  "properties": {
+    "anchor_pool_code_id": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "dp_code_id": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "fee_amount": {
+      "type": "string"
+    },
+    "fee_collector": {
+      "type": "string"
+    },
+    "fee_max": {
+      "$ref": "#/definitions/Uint256"
+    },
+    "fee_reset_every_num_blocks": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "homepage": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "money_market": {
+      "type": "string"
+    },
+    "nft_code_id": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "format": "uint64",
+      "minimum": 0.0
+    }
+  },
+  "definitions": {
+    "Uint256": {
+      "type": "string"
+    }
+  }
+}

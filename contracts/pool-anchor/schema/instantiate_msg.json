@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InstantiateMsg",
+  "type": "object",
+  "required": [
+    "beneficiary",
+    "dp_code_id",
+    "fee_amount",
+    "fee_collector",
+    "fee_max",
+    "fee_reset_every_num_blocks",
+    "money_market",
+    "owner_can_change_config",
+    "pool_description",
+    "pool_name",
+    "pool_title"
+  ],
+  "properties": {
+    "beneficiary": {
+      "type": "string"
+    },
+    "dp_code_id": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "fee_amount": {
+      "type": "string"
+    },
+    "fee_collector": {
+      "type": "string"
+    },
+    "fee_max": {
+      "$ref": "#/definitions/Uint256"
+    },
+    "fee_reset_every_num_blocks": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "money_market": {
+      "type": "string"
+    },
+    "nft_collection_active": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "nft_collection_redeemed": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "nft_contract": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "owner_can_change_config": {
+      "type": "boolean"
+    },
+    "pool_description": {
+      "type": "string"
+    },
+    "pool_name": {
+      "type": "string"
+    },
+    "pool_title": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "Uint256": {
+      "type": "string"
+    }
+  }
+}
