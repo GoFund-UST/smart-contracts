@@ -1,8 +1,9 @@
 [package]
 name = "gofund-ust-anchor"
 version = "0.1.5"
-authors = ["PFC", "carter <carter@pylon.money>"]
+authors = ["GoFund-UST", "carter <carter@pylon.money>"]
 edition = "2018"
+repository = "https://github.com/GoFund-UST/smart-contracts"
 
 description = "Pool contract for GoFund US(T). forked from pylon-core"
 exclude = [
@@ -61,7 +62,7 @@ optimize = """docker run --rm -v "$(pwd)":/code \
           --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
             --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
               cosmwasm/rust-optimizer:0.12.5"""
-optimize-w32 = """docker run --rm -v c:\\users\\ihols\\pfc\\fund-me\\GoFund-UST-contracts:/code  \
+optimize-w32 = """docker run --rm -v c:\\users\\ihols\\GoFund-UST\\smart-contracts:/code  \
             --mount type=volume,source=gofund_ust_anchor_cache,target=/code/target \
             --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
             cosmwasm/rust-optimizer:0.12.5"""

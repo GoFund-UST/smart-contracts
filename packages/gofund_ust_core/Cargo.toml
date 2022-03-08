@@ -1,12 +1,12 @@
 [package]
 name = "gofund-ust-core"
 version = "0.4.1"
-authors = ["PFC","carter@pylon.money"]
+authors = ["GoFundUST","carter@pylon.money"]
 edition = "2018"
 description = "Common helpers for other gofund-ust-core specs. forked from pylon-core"
 license = "Apache-2.0"
-repository = "https://github.com/PFC-Validator/pylon-core-contracts"
-homepage = "https://TBD.example.com"
+repository = "https://github.com/GoFund-UST/smart-contracts"
+homepage = "https://gofundust.money"
 documentation = "https://TBD.example.com"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
