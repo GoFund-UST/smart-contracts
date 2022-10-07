@@ -1,4 +1,3 @@
-use cosmwasm_bignumber::Decimal256;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use std::str::FromStr;
@@ -8,14 +7,15 @@ const CONTRACT_NAME: &str = "gofundust-pool-anchor";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 use cosmwasm_std::{
-    to_binary, Addr, Binary, CanonicalAddr, Deps, DepsMut, Env, MessageInfo, Reply, ReplyOn,
-    Response, StdError, StdResult, SubMsg, WasmMsg,
+    to_binary, Addr, Binary, CanonicalAddr, Decimal, Deps, DepsMut, Env, MessageInfo, Reply,
+    ReplyOn, Response, StdError, StdResult, SubMsg, WasmMsg,
 };
 
 use cw2::{get_contract_version, set_contract_version};
 use cw20::MinterResponse;
+use cw20_base::msg::InstantiateMsg as Cw20InstantiateMsg;
+
 use protobuf::Message;
-use terraswap::token::InstantiateMsg as Cw20InstantiateMsg;
 use yieldpay_core::pool_anchor_msg::{InstantiateMsg, MigrateMsg};
 use yieldpay_core::pool_msg::{ExecuteMsg, QueryMsg};
 
@@ -59,7 +59,7 @@ pub fn instantiate(
         owner: deps.api.addr_canonicalize(info.sender.as_str())?,
         beneficiary: deps.api.addr_canonicalize(msg.beneficiary.as_str())?,
         fee_collector: deps.api.addr_canonicalize(msg.fee_collector.as_str())?,
-        fee_amount: Decimal256::from_str(&msg.fee_amount)?,
+        fee_amount: Decimal::from_str(&msg.fee_amount)?,
         fee_max: msg.fee_max,
         fee_reset_every_num_blocks: msg.fee_reset_every_num_blocks,
         money_market: deps.api.addr_canonicalize(msg.money_market.as_str())?,
@@ -106,15 +106,21 @@ pub fn instantiate(
             admin: None,
             code_id: msg.dp_code_id,
             funds: vec![],
-            label: "GoFund US(T) Deposit Token".to_string(),
+            label: "YieldPay Deposit Token".to_string(),
             msg: to_binary(&Cw20InstantiateMsg {
-                name: format!("GoFundUST Deposit Token - {}", msg.pool_name),
-                symbol: format!("gf-{}", symbol_name),
+                name: format!("YieldPay Deposit Token - {}", msg.pool_name),
+                symbol: format!("yp-{}", symbol_name),
                 decimals: 6,
                 initial_balances: vec![],
                 mint: Some(MinterResponse {
                     minter: env.contract.address.to_string(),
                     cap: None,
+                }),
+                marketing: Some(cw20_base::msg::InstantiateMarketingInfo {
+                    project: Some(String::from("YieldPay")),
+                    description: Some(format!("YieldPay Deposit Token - {}", msg.pool_name)),
+                    marketing: None,
+                    logo: None,
                 }),
             })
             .map_err(|_o| ContractError::InstantiateError {

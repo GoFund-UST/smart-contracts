@@ -1,10 +1,10 @@
 use cosmwasm_std::testing::{MockApi, MockQuerier, MockStorage, MOCK_CONTRACT_ADDR};
 use cosmwasm_std::{
-    from_slice, Binary, Coin, ContractResult, OwnedDeps, Querier, QuerierResult, QueryRequest,
-    StdResult, SystemError, SystemResult, WasmQuery,
+    from_slice, Binary, Coin, ContractResult, CustomQuery, OwnedDeps, Querier, QuerierResult,
+    QueryRequest, StdResult, SystemError, SystemResult, WasmQuery,
 };
 use std::collections::HashMap;
-use terra_cosmwasm::TerraQueryWrapper;
+//use terra_cosmwasm::TerraQueryWrapper;
 
 #[allow(dead_code)]
 pub fn mock_dependencies(
@@ -18,13 +18,22 @@ pub fn mock_dependencies(
             wasm_smart_query_handlers: HashMap::new(),
             wasm_raw_query_handlers: HashMap::new(),
         },
+        custom_query_type: Default::default(),
     }
 }
-
+use serde::Deserialize;
+use serde::Serialize;
 pub type WasmQueryHandler = dyn Fn(&Binary) -> StdResult<Binary>;
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub enum MyCustomQuery {
+    Ping {},
+    Capitalized { text: String },
+}
+
+impl CustomQuery for MyCustomQuery {}
 
 pub struct CustomMockWasmQuerier {
-    base: MockQuerier<TerraQueryWrapper>,
+    base: MockQuerier<MyCustomQuery>,
     wasm_smart_query_handlers: HashMap<String, Box<WasmQueryHandler>>,
     wasm_raw_query_handlers: HashMap<String, Box<WasmQueryHandler>>,
 }
@@ -32,7 +41,7 @@ pub struct CustomMockWasmQuerier {
 impl Querier for CustomMockWasmQuerier {
     fn raw_query(&self, bin_request: &[u8]) -> QuerierResult {
         // MockQuerier doesn't support Custom, so we ignore it completely here
-        let request: QueryRequest<TerraQueryWrapper> = match from_slice(bin_request) {
+        let request: QueryRequest<MyCustomQuery> = match from_slice(bin_request) {
             Ok(v) => v,
             Err(e) => {
                 return SystemResult::Err(SystemError::InvalidRequest {
@@ -64,7 +73,7 @@ impl CustomMockWasmQuerier {
         self.wasm_raw_query_handlers.insert(address, handler);
     }
 
-    fn handle_query(&self, request: &QueryRequest<TerraQueryWrapper>) -> QuerierResult {
+    fn handle_query(&self, request: &QueryRequest<MyCustomQuery>) -> QuerierResult {
         match request {
             QueryRequest::Wasm(wasm_request) => match wasm_request {
                 WasmQuery::Smart { contract_addr, msg } => SystemResult::Ok(ContractResult::Ok(

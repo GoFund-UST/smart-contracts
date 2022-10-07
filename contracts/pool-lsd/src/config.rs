@@ -1,21 +1,21 @@
-use cosmwasm_bignumber::{Decimal256, Uint256};
+//use cosmwasm_bignumber::{Decimal256, Uint256};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::{CanonicalAddr, StdResult, Storage};
+use cosmwasm_std::{CanonicalAddr, Decimal, StdResult, Storage, Uint128};
 use cosmwasm_storage::{singleton, singleton_read};
 
 pub static CONFIG_KEY: &[u8] = b"config_v104";
 pub static LAST_CLAIMED_KEY: &[u8] = b"last_claimed";
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct Config {
     pub this: CanonicalAddr,
     pub owner: CanonicalAddr,
     pub beneficiary: CanonicalAddr,
     pub fee_collector: CanonicalAddr,
-    pub fee_amount: Decimal256,
-    pub fee_max: Uint256,
+    pub fee_amount: Decimal,
+    pub fee_max: Uint128,
     pub fee_reset_every_num_blocks: u64,
     pub money_market: CanonicalAddr,
     pub atoken: CanonicalAddr,
@@ -38,11 +38,11 @@ pub fn read(storage: &dyn Storage) -> StdResult<Config> {
     singleton_read(storage, CONFIG_KEY).load()
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct LastClaimed {
     pub last_claimed_at_block_height: u64,
-    pub fees_collected: Uint256,
-    pub total_earned_at_last_claimed: Uint256,
+    pub fees_collected: Uint128,
+    pub total_earned_at_last_claimed: Uint128,
 }
 
 pub fn last_claimed_store(storage: &mut dyn Storage, data: &LastClaimed) -> StdResult<()> {

@@ -1,19 +1,18 @@
-use cosmwasm_bignumber::{Decimal256, Uint256};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::{CanonicalAddr, StdResult, Storage};
+use cosmwasm_std::{CanonicalAddr, Decimal, StdResult, Storage, Uint128};
 use cosmwasm_storage::{singleton, singleton_read};
 
 pub static CONFIG_KEY: &[u8] = b"config_003";
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct Config {
     pub this: CanonicalAddr,
     pub owner: CanonicalAddr,
     pub fee_collector: CanonicalAddr,
-    pub fee_amount: Decimal256,
-    pub fee_max: Uint256,
+    pub fee_amount: Decimal,
+    pub fee_max: Uint128,
     pub fee_reset_every_num_blocks: u64,
     pub money_market: CanonicalAddr,
     pub dp_code_id: u64,

@@ -1,12 +1,13 @@
-use cosmwasm_bignumber::Uint256;
+use cosmwasm_std::Uint128;
+//use cosmwasm_bignumber::Uint256;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
     pub fee_collector: String,
     pub fee_amount: String,
-    pub fee_max: Uint256,
+    pub fee_max: Uint128,
     pub fee_reset_every_num_blocks: u64,
     pub money_market: String,
     pub dp_code_id: u64,
@@ -16,16 +17,16 @@ pub struct InstantiateMsg {
 }
 
 /// We currently take no arguments for migrations
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct MigrateMsg {}
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
     Configure {
         fee_collector: Option<String>,
         fee_amount: Option<String>,
-        fee_max: Option<Uint256>,
+        fee_max: Option<Uint128>,
         fee_reset_every_num_blocks: Option<u64>,
         money_market: Option<String>,
         dp_code_id: Option<u64>,
@@ -67,7 +68,7 @@ pub enum ExecuteMsg {
     RevertNftAdmin {},
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
     Config {},

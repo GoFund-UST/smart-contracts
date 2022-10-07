@@ -1,11 +1,10 @@
-use cosmwasm_bignumber::{Decimal256, Uint256};
 use cosmwasm_std::*;
 use cw20::BalanceResponse as Cw20BalanceResponse;
 use cw20::{Cw20ExecuteMsg, Cw20QueryMsg, Cw20ReceiveMsg};
 use yieldpay_core::pool_msg::{
     Cw20HookMsg, NftCallback, NFT_REPLY_COLLECTION_ACTIVE, NFT_REPLY_COLLECTION_REDEEMED,
 };
-use yieldpay_core::tax::deduct_tax;
+
 use yieldpay_core::token;
 
 use std::ops::{Div, Mul, Sub};
@@ -67,14 +66,7 @@ pub fn deposit(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, C
         });
     }
 
-    let dp_mint_amount = deduct_tax(
-        deps.as_ref(),
-        Coin {
-            denom: config.stable_denom.clone(),
-            amount: received,
-        },
-    )?
-    .amount;
+    let dp_mint_amount = received;
 
     // If there are NFTs. give them an 'active' one, potentially switching a 'inactive' one if it's there
     let nft_msg = if let Some(nft_contract) = config.nft_contract {
@@ -173,36 +165,12 @@ pub fn redeem(
     if epoch_state.exchange_rate.is_zero() {
         return Err(ContractError::RedeemEpochIsZero {});
     }
-    let thousand_x_exchange = epoch_state
-        .exchange_rate
-        .mul(Decimal256::from_uint256(1000u64));
+    let thousand_x_exchange = epoch_state.exchange_rate.mul(Uint128::from(1000u128));
 
-    let market_redeem_amount = cosmwasm_bignumber::Uint256::from(amount)
-        .div(thousand_x_exchange)
-        .mul(cosmwasm_bignumber::Uint256::from(1000u64));
+    let market_redeem_amount = amount.div(thousand_x_exchange).mul(Uint128::from(1000u64));
     let user_redeem_amount = market_redeem_amount.mul(epoch_state.exchange_rate);
     let adjusted_amount = user_redeem_amount;
-    /*
-       let user_redeem_amount = deduct_tax(
-           deps.as_ref(),
-           Coin {
-               denom: config.stable_denom.clone(),
-               amount: deduct_tax(
-                   deps.as_ref(),
-                   Coin {
-                       denom: config.stable_denom.clone(),
-                       amount,
-                   },
-               )
-               .map_err(|o| ContractError::RedeemTaxError { msg: o.to_string() })
-               .unwrap()
-               .amount,
-           },
-       )
-       .map_err(|o| ContractError::RedeemTaxError { msg: o.to_string() })
-       .unwrap();
 
-    */
     let nft_msg = if let Some(nft_contract) = config.nft_contract {
         if let Some(active) = config.nft_collection_active {
             if let Some(redeemed) = config.nft_collection_redeemed {
@@ -277,7 +245,7 @@ pub fn redeem(
             deps.as_ref(),
             &config.money_market,
             &config.atoken,
-            market_redeem_amount.into(),
+            market_redeem_amount,
         )?)
         .add_message(CosmosMsg::Bank(BankMsg::Send {
             to_address: sender.clone(),
@@ -293,7 +261,7 @@ pub fn redeem(
                 .unwrap()
                 .to_string(),
             msg: to_binary(&Cw20ExecuteMsg::Burn {
-                amount: Uint128::from(adjusted_amount),
+                amount: adjusted_amount,
             })?,
             funds: vec![],
         }));
@@ -337,7 +305,7 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
         deps.api.addr_humanize(&config.atoken).unwrap().to_string(),
         env.contract.address.to_string(),
     )?;
-    let dp_total_supply: Uint256 = Uint256::from_str(
+    let dp_total_supply: Uint128 = Uint128::from_str(
         &token::total_supply(
             deps.as_ref(),
             deps.api
@@ -348,16 +316,8 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
         .to_string(),
     )?;
 
-    let pool_value_locked = Uint256::from(
-        deduct_tax(
-            deps.as_ref(),
-            Coin {
-                denom: config.stable_denom.clone(),
-                amount: (atoken_balance.mul(epoch_state.exchange_rate)).into(),
-            },
-        )?
-        .amount,
-    );
+    let pool_value_locked = atoken_balance.mul(epoch_state.exchange_rate);
+
     let earnable = pool_value_locked.sub(dp_total_supply);
     // fee = 0 means use fee_max as a fixed_fee.
 
@@ -372,6 +332,17 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
     );
     last_claimed_store(deps.storage, &updated_last_claimed).unwrap();
 
+    let redeemable_earned_d: Decimal = (if epoch_state.exchange_rate.is_zero() {
+        Decimal::zero()
+    } else {
+        epoch_state.exchange_rate.inv().unwrap()
+    })
+    .mul(Decimal::from_atomics(earnable, 0)?);
+    let places = redeemable_earned_d.decimal_places();
+    let redeemable_earned: Uint128 = redeemable_earned_d
+        .atomics()
+        .checked_div(Uint128::from(10u32).pow(places))
+        .unwrap();
     // if there is no fee. then don't do a send to the fee collection.
     if fee.is_zero() {
         Ok(Response::new()
@@ -379,7 +350,7 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
                 deps.as_ref(),
                 &config.money_market,
                 &config.atoken,
-                earnable.div(epoch_state.exchange_rate).into(),
+                redeemable_earned,
             )?)
             .add_message(CosmosMsg::Bank(BankMsg::Send {
                 to_address: deps
@@ -387,26 +358,23 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
                     .addr_humanize(&config.beneficiary)
                     .unwrap()
                     .to_string(),
-                amount: vec![deduct_tax(
-                    deps.as_ref(),
-                    Coin {
-                        denom: config.stable_denom.clone(),
-                        amount: earnable.sub(fee).into(),
-                    },
-                )?],
+                amount: vec![Coin {
+                    denom: config.stable_denom.clone(),
+                    amount: earnable.sub(fee),
+                }],
             }))
             .add_attribute("action", "earn")
             .add_attribute("sender", info.sender.to_string())
             .add_attribute("amount", earnable.sub(fee).to_string())
             .add_attribute("fee", fee.to_string()))
     } else {
-        let fee_minus_one = fee.sub(Uint256::from(1u64));
+        let fee_minus_one = fee.sub(Uint128::from(1u64));
         Ok(Response::new()
             .add_messages(anchor::redeem_stable_msg(
                 deps.as_ref(),
                 &config.money_market,
                 &config.atoken,
-                earnable.div(epoch_state.exchange_rate).into(),
+                redeemable_earned,
             )?)
             .add_message(CosmosMsg::Bank(BankMsg::Send {
                 to_address: deps
@@ -414,13 +382,10 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
                     .addr_humanize(&config.beneficiary)
                     .unwrap()
                     .to_string(),
-                amount: vec![deduct_tax(
-                    deps.as_ref(),
-                    Coin {
-                        denom: config.stable_denom.clone(),
-                        amount: earnable.sub(fee).into(),
-                    },
-                )?],
+                amount: vec![Coin {
+                    denom: config.stable_denom.clone(),
+                    amount: earnable.sub(fee),
+                }],
             }))
             .add_message(CosmosMsg::Bank(BankMsg::Send {
                 to_address: deps
@@ -428,13 +393,10 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
                     .addr_humanize(&config.fee_collector)
                     .unwrap()
                     .to_string(),
-                amount: vec![deduct_tax(
-                    deps.as_ref(),
-                    Coin {
-                        denom: config.stable_denom.clone(),
-                        amount: fee_minus_one.into(),
-                    },
-                )?],
+                amount: vec![Coin {
+                    denom: config.stable_denom.clone(),
+                    amount: fee_minus_one,
+                }],
             }))
             .add_attribute("action", "earn")
             .add_attribute("sender", info.sender.to_string())
@@ -445,15 +407,15 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
 /// Calculate fee to charge, taking into account monthly caps
 /// returns: fee to charge, and fees collected in the current period
 pub fn calc_fee(
-    earnable: Uint256,
-    fee_amount: Decimal256,
-    fee_max: Uint256,
+    earnable: Uint128,
+    fee_amount: Decimal,
+    fee_max: Uint128,
     _fee_reset_every_num_blocks: u64,
     _current_block_height: u64,
     last_claimed_current: LastClaimed,
-) -> (Uint256, LastClaimed) {
-    let mut fee: Uint256;
-    if fee_amount > Decimal256::zero() {
+) -> (Uint128, LastClaimed) {
+    let mut fee: Uint128;
+    if fee_amount > Decimal::zero() {
         fee = earnable.mul(fee_amount);
         if !fee_max.is_zero() && fee > fee_max {
             fee = fee_max;

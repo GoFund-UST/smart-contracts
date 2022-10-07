@@ -5,8 +5,8 @@ authors = ["GoFundUST","carter@pylon.money"]
 edition = "2018"
 description = "Common helpers for other yieldpay-core specs. forked from pylon-core"
 license = "Apache-2.0"
-repository = "https://github.com/GoFund-UST/smart-contracts"
-homepage = "https://gofundust.money"
+repository = "https://github.com/Yield=Pay/smart-contracts"
+homepage = "https://yieldpay.money"
 documentation = "https://TBD.example.com"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -17,11 +17,11 @@ documentation = "https://TBD.example.com"
 backtraces = ["cosmwasm-std/backtraces"]
 
 [dependencies]
-cw20 = "0.8.1"
-cosmwasm-bignumber = "2.2.0"
-cosmwasm-std = { version = "0.16.0", features = ["iterator"] }
-cosmwasm-storage = { version = "0.16.0", features = ["iterator"] }
-terra-cosmwasm = "2.2.0"
+cw20 = "0.15.1"
+#cosmwasm-bignumber = "2.2.0"
+cosmwasm-std = { version = "1.1.3", features = ["iterator"] }
+cosmwasm-storage = { version = "1.1.3", features = ["iterator"] }
+#terra-cosmwasm = "2.2.0"
 schemars = "0.8.1"
 serde = { version = "1.0.103", default-features = false, features = ["derive"] }
 

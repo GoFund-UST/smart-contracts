@@ -1,4 +1,4 @@
-use cosmwasm_bignumber::Uint256;
+//use cosmwasm_bignumber::Uint256;
 use cosmwasm_std::*;
 //use gofund_ust_core::pool_resp as resp;
 use yieldpay_core::pool_resp::{
@@ -6,7 +6,6 @@ use yieldpay_core::pool_resp::{
 };
 
 use std::ops::{Mul, Sub};
-use yieldpay_core::tax::deduct_tax;
 use yieldpay_core::token;
 
 use crate::config;
@@ -151,16 +150,8 @@ pub fn debug_pool_value_locked(deps: Deps, env: Env) -> StdResult<Binary> {
             .to_string(),
     )?;
 
-    let pool_value_locked = Uint256::from(
-        deduct_tax(
-            deps,
-            Coin {
-                denom: config.stable_denom,
-                amount: (atoken_balance.mul(epoch_state.exchange_rate)).into(),
-            },
-        )?
-        .amount,
-    );
+    let pool_value_locked = atoken_balance.mul(epoch_state.exchange_rate);
+
     to_binary(&pool_value_locked)
 }
 
@@ -183,18 +174,9 @@ pub fn debug_earnable(deps: Deps, env: Env) -> StdResult<Binary> {
             .to_string(),
     )?;
 
-    let pool_value_locked = Uint256::from(
-        deduct_tax(
-            deps,
-            Coin {
-                denom: config.stable_denom,
-                amount: (atoken_balance.mul(epoch_state.exchange_rate)).into(),
-            },
-        )?
-        .amount,
-    );
+    let pool_value_locked = atoken_balance.mul(epoch_state.exchange_rate);
     let earnable = if dp_total_supply >= pool_value_locked {
-        Uint256::zero()
+        Uint128::zero()
     } else {
         pool_value_locked.sub(dp_total_supply)
     };
@@ -214,22 +196,7 @@ pub fn debug_redeem(deps: Deps, _env: Env, _sender: String, amount: Uint128) -> 
     }
     let market_redeem_amount = Uint256::from(amount).div(epoch_state.exchange_rate);
 
-    let user_redeem_amount = deduct_tax(
-        deps,
-        Coin {
-            denom: config.stable_denom.clone(),
-            amount: deduct_tax(
-                deps,
-                Coin {
-                    denom: config.stable_denom.clone(),
-                    amount,
-                },
-            )
-            .unwrap()
-            .amount,
-        },
-    )
-    .unwrap();
+    let user_redeem_amount =amount;
 
     to_binary(&RedeemResponse {
         burn_amount: amount,
@@ -262,19 +229,11 @@ pub fn fee(deps: Deps, env: Env) -> StdResult<Binary> {
             .to_string(),
     )?;
 
-    let pool_value_locked = Uint256::from(
-        deduct_tax(
-            deps,
-            Coin {
-                denom: config.stable_denom,
-                amount: (atoken_balance.mul(epoch_state.exchange_rate)).into(),
-            },
-        )?
-        .amount,
-    );
+    let pool_value_locked = atoken_balance.mul(epoch_state.exchange_rate);
+
     // let earnable = pool_value_locked.sub(dp_total_supply);
     let earnable = if dp_total_supply >= pool_value_locked {
-        Uint256::zero()
+        Uint128::zero()
     } else {
         pool_value_locked.sub(dp_total_supply)
     };
@@ -314,18 +273,9 @@ pub fn claimable(deps: Deps, env: Env) -> StdResult<Binary> {
             .to_string(),
     )?;
 
-    let pool_value_locked = Uint256::from(
-        deduct_tax(
-            deps,
-            Coin {
-                denom: config.stable_denom,
-                amount: (atoken_balance.mul(epoch_state.exchange_rate)).into(),
-            },
-        )?
-        .amount,
-    );
+    let pool_value_locked = atoken_balance.mul(epoch_state.exchange_rate);
     let earnable = if dp_total_supply >= pool_value_locked {
-        Uint256::zero()
+        Uint128::zero()
     } else {
         pool_value_locked.sub(dp_total_supply)
     };
@@ -345,7 +295,7 @@ pub fn claimable(deps: Deps, env: Env) -> StdResult<Binary> {
     } else if earnable > fee {
         earnable.sub(fee)
     } else {
-        Uint256::zero()
+        Uint128::zero()
     };
     to_binary(&ClaimableRewardResponse {
         total_value: dp_total_supply,

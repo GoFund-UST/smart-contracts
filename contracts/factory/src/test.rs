@@ -3,11 +3,11 @@ use cosmwasm_std::testing::{mock_env, mock_info};
 use cosmwasm_std::{from_binary, to_binary, StdError};
 
 use crate::contract;
-use gofund_ust_core::factory_msg;
-use gofund_ust_core::factory_response::FundsCountResponse;
-use gofund_ust_core::pool_anchor_response;
-use gofund_ust_core::pool_msg;
 use schemars::_serde_json::json;
+use yieldpay_core::factory_msg;
+use yieldpay_core::factory_response::FundsCountResponse;
+use yieldpay_core::pool_anchor_response;
+use yieldpay_core::pool_msg;
 
 const ANCHOR_POOL: &str = "pool-anchor";
 const ANCHOR_POOL_2: &str = "pool-anchor-2";
@@ -58,7 +58,7 @@ fn instantiate() {
         dp_code_id: 666,
         anchor_pool_code_id: 12345,
         nft_code_id: None,
-        nft_instantiate: None,
+        // nft_instantiate: None,
         homepage: None,
     };
     let json = json!(msg).to_string();
@@ -137,7 +137,7 @@ fn add_pool() {
         dp_code_id: 666,
         anchor_pool_code_id: 12345,
         nft_code_id: None,
-        nft_instantiate: None,
+        //nft_instantiate: None,
         homepage: None,
     };
     //   let json = json!(msg).to_string();
@@ -234,7 +234,7 @@ fn create_anchor_fund() {
         dp_code_id: 666,
         anchor_pool_code_id: 12345,
         nft_code_id: None,
-        nft_instantiate: None,
+        //nft_instantiate: None,
         homepage: None,
     };
     //   let json = json!(msg).to_string();

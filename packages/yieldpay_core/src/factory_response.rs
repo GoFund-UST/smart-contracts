@@ -1,7 +1,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct ConfigResponse {
     pub fee_collector: String,
     pub money_market: String,
@@ -15,7 +15,7 @@ pub struct ConfigResponse {
     pub nft_contract: Option<String>,
     pub homepage: Option<String>,
 }
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct AnchorPool {
     pub contract: String,
     pub owner: String,
@@ -26,11 +26,11 @@ pub struct AnchorPool {
     pub redeemed_collection: Option<u64>,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, JsonSchema, Debug)]
 pub struct FundsResponse {
     pub funds: Vec<AnchorPool>,
 }
-#[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, JsonSchema, Debug)]
 pub struct FundsCountResponse {
     pub count: usize,
 }

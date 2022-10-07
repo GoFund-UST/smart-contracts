@@ -1,19 +1,18 @@
 use crate::config::Config;
-use cosmwasm_bignumber::{Decimal256, Uint256};
-use cosmwasm_std::{CanonicalAddr, StdResult, Storage};
+use cosmwasm_std::{CanonicalAddr, Decimal, StdResult, Storage, Uint128};
 use cosmwasm_storage::singleton_read;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 const CONFIG_V100: &[u8] = b"config_001";
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct ConfigV100 {
     pub this: CanonicalAddr,
     pub owner: CanonicalAddr,
     pub fee_collector: CanonicalAddr,
-    pub fee_amount: Decimal256,
-    pub fee_max: Uint256,
+    pub fee_amount: Decimal,
+    pub fee_max: Uint128,
     pub fee_reset_every_num_blocks: u64,
     pub money_market: CanonicalAddr,
     pub dp_code_id: u64,

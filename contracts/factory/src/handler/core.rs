@@ -1,5 +1,5 @@
 use crate::collection::{CollectionExecuteMsg, NewCollectionMsg, Trait};
-use cosmwasm_bignumber::{Decimal256, Uint256};
+
 use cosmwasm_std::*;
 use std::str::FromStr;
 use yieldpay_core::factory_response::AnchorPool;
@@ -22,7 +22,7 @@ pub fn configure(
     info: MessageInfo,
     fee_collector: Option<String>,
     fee_amount: Option<String>,
-    fee_max: Option<Uint256>,
+    fee_max: Option<Uint128>,
     fee_reset_every_num_blocks: Option<u64>,
     money_market: Option<String>,
     dp_code_id: Option<u64>,
@@ -43,7 +43,7 @@ pub fn configure(
         config.fee_collector = deps.api.addr_canonicalize(fee_collector.as_str()).unwrap();
     }
     if let Some(fee_amount) = fee_amount {
-        config.fee_amount = Decimal256::from_str(&fee_amount)?
+        config.fee_amount = Decimal::from_str(&fee_amount)?
     }
     if let Some(fee_max) = fee_max {
         config.fee_max = fee_max

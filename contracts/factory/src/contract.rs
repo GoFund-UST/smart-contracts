@@ -1,8 +1,7 @@
-use cosmwasm_bignumber::Decimal256;
 use cw2::{get_contract_version, set_contract_version};
 
 /// Contract name that is used for migration.
-const CONTRACT_NAME: &str = "gofundust-factory";
+const CONTRACT_NAME: &str = "yieldpay-factory";
 /// Contract version that is used for migration.
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 #[cfg(not(feature = "library"))]
@@ -10,13 +9,12 @@ use cosmwasm_std::entry_point;
 use std::str::FromStr;
 
 use cosmwasm_std::{
-    to_binary, Addr, Binary, Deps, DepsMut, Env, MessageInfo, Reply, ReplyOn, Response, StdError,
-    StdResult, SubMsg, WasmMsg,
+    to_binary, Addr, Binary, Decimal, Deps, DepsMut, Env, MessageInfo, Reply, ReplyOn, Response,
+    StdError, StdResult, SubMsg, WasmMsg,
 };
+use protobuf::Message;
 use yieldpay_core::factory_msg::{ExecuteMsg, QueryMsg};
 use yieldpay_core::factory_msg::{InstantiateMsg, MigrateMsg};
-//use protobuf::reflect::ReflectValueRef::Message;
-use protobuf::Message;
 
 use crate::config;
 #[allow(unused_imports)]
@@ -48,7 +46,7 @@ pub fn instantiate(
         this: deps.api.addr_canonicalize(env.contract.address.as_str())?,
         owner: deps.api.addr_canonicalize(info.sender.as_str())?,
         fee_collector: deps.api.addr_canonicalize(msg.fee_collector.as_str())?,
-        fee_amount: Decimal256::from_str(&msg.fee_amount)?,
+        fee_amount: Decimal::from_str(&msg.fee_amount)?,
         fee_max: msg.fee_max,
         fee_reset_every_num_blocks: msg.fee_reset_every_num_blocks,
         money_market: deps.api.addr_canonicalize(msg.money_market.as_str())?,
@@ -70,8 +68,8 @@ pub fn instantiate(
                 funds: vec![],
                 label: "".to_string(),
                 msg: to_binary(&NFTInstantiateMsg::gen_default(
-                    "Go Fund US(T) NFT",
-                    "GoFundNFT",
+                    "YieldPay NFT",
+                    "YieldPayNFT",
                     env.contract.address.as_str(),
                 ))
                 .map_err(|_o| ContractError::InstantiateError {
@@ -273,8 +271,8 @@ pub fn migrate(deps: DepsMut, _env: Env, _msg: MigrateMsg) -> Result<Response, C
 
     match contract_version.contract.as_ref() {
         #[allow(clippy::single_match)]
-        "gofundust-factory" => match contract_version.version.as_ref() {
-            "0.1.1" => {
+        "yieldpay-factory" => match contract_version.version.as_ref() {
+            "0.0.0" => {
                 let config_v100 = ConfigV100::load(deps.storage)?;
 
                 config::store(deps.storage, &config_v100.migrate_from())?;

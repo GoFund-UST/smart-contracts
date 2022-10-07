@@ -1,11 +1,10 @@
-use cosmwasm_bignumber::{Decimal256, Uint256};
+//use cosmwasm_bignumber::{Decimal256, Uint256};
 use cosmwasm_std::*;
 use cw20::Cw20ExecuteMsg;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use yieldpay_core::tax::deduct_tax;
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
     Config {},
@@ -16,7 +15,7 @@ pub enum QueryMsg {
 }
 
 // We define a custom struct for each query response
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct ConfigResponse {
     pub owner_addr: String,
     pub aterra_contract: String,
@@ -26,7 +25,7 @@ pub struct ConfigResponse {
     pub collector_contract: String,
     pub distributor_contract: String,
     pub stable_denom: String,
-    pub max_borrow_factor: Decimal256,
+    pub max_borrow_factor: Decimal,
 }
 
 pub fn config(deps: Deps, market: &CanonicalAddr) -> StdResult<ConfigResponse> {
@@ -40,10 +39,10 @@ pub fn config(deps: Deps, market: &CanonicalAddr) -> StdResult<ConfigResponse> {
 }
 
 // We define a custom struct for each query response
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct EpochStateResponse {
-    pub exchange_rate: Decimal256,
-    pub aterra_supply: Uint256,
+    pub exchange_rate: Decimal,
+    pub aterra_supply: Uint128,
 }
 
 pub fn epoch_state(deps: Deps, market: &CanonicalAddr) -> StdResult<EpochStateResponse> {
@@ -59,13 +58,13 @@ pub fn epoch_state(deps: Deps, market: &CanonicalAddr) -> StdResult<EpochStateRe
     Ok(epoch_state)
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum HandleMsg {
     DepositStable {},
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum Cw20HookMsg {
     /// Return stable coins to a user
@@ -82,13 +81,10 @@ pub fn deposit_stable_msg(
     Ok(vec![CosmosMsg::Wasm(WasmMsg::Execute {
         contract_addr: deps.api.addr_humanize(market).unwrap().to_string(),
         msg: to_binary(&HandleMsg::DepositStable {})?,
-        funds: vec![deduct_tax(
-            deps,
-            Coin {
-                denom: denom.to_string(),
-                amount,
-            },
-        )?],
+        funds: vec![Coin {
+            denom: denom.to_string(),
+            amount,
+        }],
     })])
 }
 

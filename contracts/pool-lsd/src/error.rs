@@ -1,4 +1,4 @@
-use cosmwasm_std::{OverflowError, StdError};
+use cosmwasm_std::{DecimalRangeExceeded, OverflowError, StdError};
 use thiserror::Error;
 
 #[derive(Error, Debug, PartialEq)]
@@ -8,6 +8,8 @@ pub enum ContractError {
 
     #[error("Overflow:{0}")]
     Overflow(#[from] OverflowError),
+    #[error("DecimalRangeExceeded:{0}")]
+    DecimalRangeExceeded(#[from] DecimalRangeExceeded),
 
     #[error(
         "Core/Pool: Unauthorized (action: {action:?}, expected: {expected:?}, actual: {actual:?})"

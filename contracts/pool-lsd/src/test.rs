@@ -4,14 +4,13 @@ use crate::error::ContractError;
 use crate::handler::core::calc_fee;
 use crate::mock_querier::mock_dependencies;
 use crate::querier::anchor::{ConfigResponse, EpochStateResponse, QueryMsg as AnchorQueryMsg};
-use cosmwasm_bignumber::{Decimal256, Uint256};
 use cosmwasm_std::testing::{mock_env, mock_info};
-use cosmwasm_std::{from_binary, to_binary};
-use gofund_ust_core::pool_anchor_msg::InstantiateMsg;
-use gofund_ust_core::pool_anchor_response;
-use gofund_ust_core::pool_msg::{ExecuteMsg, QueryMsg};
+use cosmwasm_std::{from_binary, to_binary, Decimal, Uint128};
 use schemars::_serde_json::json;
 use std::str::FromStr;
+use yieldpay_core::pool_anchor_msg::InstantiateMsg;
+use yieldpay_core::pool_anchor_response;
+use yieldpay_core::pool_msg::{ExecuteMsg, QueryMsg};
 
 const MONEY_MARKET: &str = "money-market";
 const ATOKEN_CONTRACT: &str = "terra1m0rjzm27qetjj8fx89knnhl8frvlrmjcfultav";
@@ -74,18 +73,18 @@ fn test_calc_fee() {
         total_earned_at_last_claimed: Default::default(),
     };
     let (fee, _new_last) = calc_fee(
-        Uint256::zero(),
-        Decimal256::from_str("0.05").unwrap(),
-        Uint256::from(1_000_000_000u128),
+        Uint128::zero(),
+        Decimal::from_str("0.05").unwrap(),
+        Uint128::from(1_000_000_000u128),
         1000u64,
         2000u64,
         last_claimed.clone(),
     );
-    assert_eq!(fee, Uint256::zero());
+    assert_eq!(fee, Uint128::zero());
     let (fee, new_last) = calc_fee(
-        Uint256::from(1_000_000u64),
-        Decimal256::from_str("0.05").unwrap(),
-        Uint256::from(1_000_000_000u128),
+        Uint128::from(1_000_000u64),
+        Decimal::from_str("0.05").unwrap(),
+        Uint128::from(1_000_000_000u128),
         1000u64,
         2000u64,
         last_claimed,
@@ -93,25 +92,25 @@ fn test_calc_fee() {
 
     assert_eq!(
         new_last.total_earned_at_last_claimed,
-        Uint256::from(950_000u64)
+        Uint128::from(950_000u64)
     );
-    assert_eq!(new_last.fees_collected, Uint256::from(50_000u64));
-    assert_eq!(fee, Uint256::from(50_000u64));
+    assert_eq!(new_last.fees_collected, Uint128::from(50_000u64));
+    assert_eq!(fee, Uint128::from(50_000u64));
     let (fee, new_last2) = calc_fee(
-        Uint256::from(1_000_000u64),
-        Decimal256::from_str("0.05").unwrap(),
-        Uint256::from(1_000_000_000u128),
+        Uint128::from(1_000_000u64),
+        Decimal::from_str("0.05").unwrap(),
+        Uint128::from(1_000_000_000u128),
         1000u64,
         3000u64,
         new_last,
     );
     assert_eq!(
         new_last2.total_earned_at_last_claimed,
-        Uint256::from(1_900_000u64)
+        Uint128::from(1_900_000u64)
     );
-    assert_eq!(new_last2.fees_collected, Uint256::from(100_000u64));
+    assert_eq!(new_last2.fees_collected, Uint128::from(100_000u64));
 
-    assert_eq!(fee, Uint256::from(50_000u64));
+    assert_eq!(fee, Uint128::from(50_000u64));
 }
 
 #[test]
@@ -246,7 +245,7 @@ fn test_nft_set_reset() {
     let _resp = contract::execute(
         deps.as_mut(),
         env.clone(),
-        fee_collector.clone(),
+        beneficiary.clone(),
         clear_msg.clone(),
     )
     .unwrap();

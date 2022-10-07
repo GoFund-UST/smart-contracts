@@ -7,9 +7,9 @@ pub static ANCHOR_POOLS_BENEFICIARY_IDX: &str = "anchor_pool_001_beneficiary";
 pub static ANCHOR_POOLS_NAME_IDX: &str = "anchor_pool_001_name";
 
 pub struct AnchorPoolIndexes<'a> {
-    pub owner: MultiIndex<'a, (String, Vec<u8>), AnchorPool>,
-    pub beneficiary: MultiIndex<'a, (String, Vec<u8>), AnchorPool>,
-    pub pool: MultiIndex<'a, (String, Vec<u8>), AnchorPool>,
+    pub owner: MultiIndex<'a, String, AnchorPool, String>,
+    pub beneficiary: MultiIndex<'a, String, AnchorPool, String>,
+    pub pool: MultiIndex<'a, String, AnchorPool, String>,
 }
 
 impl<'a> IndexList<AnchorPool> for AnchorPoolIndexes<'a> {
@@ -18,14 +18,14 @@ impl<'a> IndexList<AnchorPool> for AnchorPoolIndexes<'a> {
         Box::new(v.into_iter())
     }
 }
-pub fn anchor_pool_owner_idx(d: &AnchorPool, k: Vec<u8>) -> (String, Vec<u8>) {
-    (d.owner.clone(), k)
+pub fn anchor_pool_owner_idx(_pk: &[u8], d: &AnchorPool) -> String {
+    d.owner.clone()
 }
-pub fn anchor_pool_beneficiary_idx(d: &AnchorPool, k: Vec<u8>) -> (String, Vec<u8>) {
-    (d.beneficiary.clone(), k)
+pub fn anchor_pool_beneficiary_idx(_pk: &[u8], d: &AnchorPool) -> String {
+    d.beneficiary.clone()
 }
-pub fn anchor_pool_name_idx(d: &AnchorPool, k: Vec<u8>) -> (String, Vec<u8>) {
-    (d.pool_name.clone(), k)
+pub fn anchor_pool_name_idx(_pk: &[u8], d: &AnchorPool) -> String {
+    d.pool_name.clone()
 }
 
 pub fn anchor_pools<'a>() -> IndexedMap<'a, String, AnchorPool, AnchorPoolIndexes<'a>> {

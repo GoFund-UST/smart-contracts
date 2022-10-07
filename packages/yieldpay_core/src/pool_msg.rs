@@ -54,12 +54,12 @@ impl ExecuteMsg {
         Ok(execute.into())
     }
 }
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum Cw20HookMsg {
     Redeem {},
 }
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
     DepositAmountOf { owner: String }, // -> Uint128
@@ -82,7 +82,7 @@ pub enum QueryMsg {
 
 pub const NFT_REPLY_COLLECTION_ACTIVE: u64 = 2;
 pub const NFT_REPLY_COLLECTION_REDEEMED: u64 = 3;
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct NftCallback {
     pub contract_address: String,
     pub active_redeemed: u64,

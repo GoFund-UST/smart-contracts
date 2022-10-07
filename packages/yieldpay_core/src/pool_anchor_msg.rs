@@ -1,8 +1,8 @@
-use cosmwasm_bignumber::Uint256;
+use cosmwasm_std::Uint128;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
     pub pool_name: String,
     pub pool_title: String,
@@ -10,7 +10,7 @@ pub struct InstantiateMsg {
     pub beneficiary: String,
     pub fee_collector: String,
     pub fee_amount: String,
-    pub fee_max: Uint256,
+    pub fee_max: Uint128,
     pub fee_reset_every_num_blocks: u64,
     pub money_market: String,
     pub dp_code_id: u64,
@@ -21,5 +21,5 @@ pub struct InstantiateMsg {
 }
 
 /// We currently take no arguments for migrations
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq, JsonSchema)]
 pub struct MigrateMsg {}
