@@ -13,10 +13,9 @@ use cosmwasm_std::{
     to_binary, Addr, Binary, Deps, DepsMut, Env, MessageInfo, Reply, ReplyOn, Response, StdError,
     StdResult, SubMsg, WasmMsg,
 };
-use gofund_ust_core::factory_msg::{ExecuteMsg, QueryMsg};
-use gofund_ust_core::factory_msg::{InstantiateMsg, MigrateMsg};
+use yieldpay_core::factory_msg::{ExecuteMsg, QueryMsg};
+use yieldpay_core::factory_msg::{InstantiateMsg, MigrateMsg};
 //use protobuf::reflect::ReflectValueRef::Message;
-//use gofund_ust_core::pool_msg;
 use protobuf::Message;
 
 use crate::config;

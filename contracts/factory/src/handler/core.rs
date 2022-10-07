@@ -1,12 +1,12 @@
 use crate::collection::{CollectionExecuteMsg, NewCollectionMsg, Trait};
 use cosmwasm_bignumber::{Decimal256, Uint256};
 use cosmwasm_std::*;
-use gofund_ust_core::factory_response::AnchorPool;
-use gofund_ust_core::pool_msg::{
+use std::str::FromStr;
+use yieldpay_core::factory_response::AnchorPool;
+use yieldpay_core::pool_msg::{
     NftCallback, NFT_REPLY_COLLECTION_ACTIVE, NFT_REPLY_COLLECTION_REDEEMED,
 };
-use gofund_ust_core::{pool_anchor_msg, pool_msg};
-use std::str::FromStr;
+use yieldpay_core::{pool_anchor_msg, pool_msg};
 
 use crate::config;
 use crate::config::read;

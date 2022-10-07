@@ -1,5 +1,5 @@
 use cw_storage_plus::{Index, IndexList, IndexedMap, MultiIndex};
-use gofund_ust_core::factory_response::AnchorPool;
+use yieldpay_core::factory_response::AnchorPool;
 
 pub static ANCHOR_POOLS_KEY: &str = "anchor_pool_001";
 pub static ANCHOR_POOLS_OWNER_IDX: &str = "anchor_pool_001_owner";

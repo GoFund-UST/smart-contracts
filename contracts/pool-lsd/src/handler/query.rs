@@ -1,13 +1,13 @@
 use cosmwasm_bignumber::Uint256;
 use cosmwasm_std::*;
 //use gofund_ust_core::pool_resp as resp;
-use gofund_ust_core::pool_resp::{
+use yieldpay_core::pool_resp::{
     ClaimableRewardResponse, DepositAmountResponse, FeeResponse, TotalDepositAmountResponse,
 };
 
-use gofund_ust_core::tax::deduct_tax;
-use gofund_ust_core::token;
 use std::ops::{Mul, Sub};
+use yieldpay_core::tax::deduct_tax;
+use yieldpay_core::token;
 
 use crate::config;
 use crate::config::last_claimed_read;
@@ -58,7 +58,7 @@ pub fn config(deps: Deps, _env: Env) -> StdResult<Binary> {
     } else {
         None
     };
-    to_binary(&gofund_ust_core::pool_anchor_response::ConfigResponse {
+    to_binary(&yieldpay_core::pool_anchor_response::ConfigResponse {
         pool_name: config.pool_name,
         pool_title: config.pool_title,
         pool_description: config.pool_description,

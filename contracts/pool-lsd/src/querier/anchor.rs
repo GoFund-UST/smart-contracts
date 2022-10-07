@@ -1,9 +1,9 @@
 use cosmwasm_bignumber::{Decimal256, Uint256};
 use cosmwasm_std::*;
 use cw20::Cw20ExecuteMsg;
-use gofund_ust_core::tax::deduct_tax;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use yieldpay_core::tax::deduct_tax;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]

@@ -2,11 +2,11 @@ use cosmwasm_bignumber::{Decimal256, Uint256};
 use cosmwasm_std::*;
 use cw20::BalanceResponse as Cw20BalanceResponse;
 use cw20::{Cw20ExecuteMsg, Cw20QueryMsg, Cw20ReceiveMsg};
-use gofund_ust_core::pool_msg::{
+use yieldpay_core::pool_msg::{
     Cw20HookMsg, NftCallback, NFT_REPLY_COLLECTION_ACTIVE, NFT_REPLY_COLLECTION_REDEEMED,
 };
-use gofund_ust_core::tax::deduct_tax;
-use gofund_ust_core::token;
+use yieldpay_core::tax::deduct_tax;
+use yieldpay_core::token;
 
 use std::ops::{Div, Mul, Sub};
 use std::str::FromStr;

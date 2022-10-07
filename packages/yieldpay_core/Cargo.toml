@@ -1,9 +1,9 @@
 [package]
-name = "gofund-ust-core"
-version = "0.4.1"
+name = "yieldpay-core"
+version = "1.0.1"
 authors = ["GoFundUST","carter@pylon.money"]
 edition = "2018"
-description = "Common helpers for other gofund-ust-core specs. forked from pylon-core"
+description = "Common helpers for other yieldpay-core specs. forked from pylon-core"
 license = "Apache-2.0"
 repository = "https://github.com/GoFund-UST/smart-contracts"
 homepage = "https://gofundust.money"

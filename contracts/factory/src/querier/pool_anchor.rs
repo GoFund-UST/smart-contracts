@@ -1,7 +1,7 @@
 use cosmwasm_std::*;
-use gofund_ust_core::pool_anchor_response::ConfigResponse;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use yieldpay_core::pool_anchor_response::ConfigResponse;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]

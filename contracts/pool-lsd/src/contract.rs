@@ -14,10 +14,10 @@ use cosmwasm_std::{
 
 use cw2::{get_contract_version, set_contract_version};
 use cw20::MinterResponse;
-use gofund_ust_core::pool_anchor_msg::{InstantiateMsg, MigrateMsg};
-use gofund_ust_core::pool_msg::{ExecuteMsg, QueryMsg};
 use protobuf::Message;
 use terraswap::token::InstantiateMsg as Cw20InstantiateMsg;
+use yieldpay_core::pool_anchor_msg::{InstantiateMsg, MigrateMsg};
+use yieldpay_core::pool_msg::{ExecuteMsg, QueryMsg};
 
 #[allow(unused_imports)]
 use crate::config::{last_claimed_store, read, LastClaimed};

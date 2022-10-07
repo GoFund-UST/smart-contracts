@@ -1,9 +1,9 @@
 use cosmwasm_std::*;
 use cw_storage_plus::Bound;
-use gofund_ust_core::factory_response::{
+use yieldpay_core::factory_response::{
     AnchorPool, ConfigResponse, FundsCountResponse, FundsResponse,
 };
-use gofund_ust_core::pool_anchor_response;
+use yieldpay_core::pool_anchor_response;
 const DEFAULT_LIMIT: u32 = 10;
 const MAX_LIMIT: u32 = 30;
 
